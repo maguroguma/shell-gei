@@ -72,4 +72,36 @@ find . | grep {{ 検索パターン }}
 
 ## 問題1
 
+```sh
+# ドットをエスケープする
+cat files.txt | grep '\.exe$'
+# 手グセでawkを使うのも良さそう
+cat files.txt | awk '/\.exe$/'
+```
+
+## 問題2
+
+ImageMagickというソフトが画像変換に便利なコマンドを提供する。
+
+```sh
+sudo apt install imagemagick
+
+# lsの結果はパイプすると行ごとに入力される
+ls *.png
+
+# fileコマンドはファイルの種類を特定するコマンド
+file 10_black.png
+
+# xargsの-I@はイディオムと考える（@を変数と考えるととりあえずつけるでも困らないかも）
+# sedで一致部分を消すって発想が中々出てこないので、なじませたい
+ls *.png | sed 's/\.png$//' | xargs -I@ convert @.png @.jpg
+
+# timeコマンドで時間を計測する
+# xargsの -P2 オプションでコアを2つ使って並列処理する
+time ls *.png | sed 's/\.png$//' | xargs -P2 -I@ convert @.png @.jpg
+# nprocコマンドはコア数を出してくれるので、以下のようにすると最適かも
+time ls *.png | sed 's/\.png$//' | xargs -P$(nproc) -I@ convert @.png @.jpg
+
+# parallelというコマンドを使っても行けるっぽい
+```
 
