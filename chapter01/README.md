@@ -105,3 +105,24 @@ time ls *.png | sed 's/\.png$//' | xargs -P$(nproc) -I@ convert @.png @.jpg
 # parallelというコマンドを使っても行けるっぽい
 ```
 
+## 問題3
+
+- `ls -U` はソートしないためはやい
+
+```sh
+# renameコマンドはsedのような表記（perlのような表記）でファイル名を変更するコマンド
+sudo apt install rename
+
+# 最初の置換で0を7個つける
+# 次の正規表現で後ろの7桁の数字をキャプチャする
+ls -U | xargs -P2 rename 's/^/0000000/;s/0*([0-9]{7})/$1/'
+
+# 以下はよくわからなかったが、やはりsedで余分な部分を削除する、というのは典型パターンっぽい
+find . | sed 's;^\./;;' | grep -v ^\\.$ | grep -v ^0 | awk '{ print $1, sprintf("%07d", $1) }'
+find . | sed 's;^\./;;' | awk '{ print $1, sprintf("%07d", $1) }'
+
+# seqのwオプションは単体で便利そう
+# sedパートで実行コマンド文字列を作っている
+# sh -c, bash -cの後に渡した文字列をシェルスクリプトとして実行させられる
+seq -w 100 | awk '{ print $1, $1 }' | sed 's/^0*/mv /' | xargs -P2 -I@ sh -c @
+```
