@@ -126,3 +126,16 @@ find . | sed 's;^\./;;' | awk '{ print $1, sprintf("%07d", $1) }'
 # sh -c, bash -cの後に渡した文字列をシェルスクリプトとして実行させられる
 seq -w 100 | awk '{ print $1, $1 }' | sed 's/^0*/mv /' | xargs -P2 -I@ sh -c @
 ```
+
+## 問題4
+
+`grep -l, rg -l` はファイル名だけ出す典型オプション。
+
+```sh
+# コマンド文字列 | bashでのコマンド実行も典型、ご安全に
+# $RANDOMは2^15までの乱数を手軽に生成できる環境変数、zshにもあるっぽい
+seq 10000 | sed 's/^/echo $RANDOM > /' | bash
+
+# rgはデフォルトで並列実行してくれるから早いらしい
+rg -l '^10$' | xargs rm
+```
