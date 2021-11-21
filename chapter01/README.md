@@ -139,3 +139,14 @@ seq 10000 | sed 's/^/echo $RANDOM > /' | bash
 # rgはデフォルトで並列実行してくれるから早いらしい
 rg -l '^10$' | xargs rm
 ```
+
+## 問題5
+
+```sh
+# awkは空白区切りで考えると柔軟な条件によって行抽出が可能になる
+cat ./qdata/5/ntp.conf | awk '$1 == "pool"'
+
+# パイプしてもいいし、そのままアクションに書いても良い
+cat ./qdata/5/ntp.conf | awk '$1 == "pool"' | awk '{ print $2 }'
+cat ./qdata/5/ntp.conf | awk '$1 == "pool" { print $2 }'
+```
