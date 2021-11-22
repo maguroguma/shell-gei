@@ -150,3 +150,26 @@ cat ./qdata/5/ntp.conf | awk '$1 == "pool"'
 cat ./qdata/5/ntp.conf | awk '$1 == "pool"' | awk '{ print $2 }'
 cat ./qdata/5/ntp.conf | awk '$1 == "pool" { print $2 }'
 ```
+
+## 問題6
+
+awkのfor文が基本。
+seqの特殊なオプションとか、printfまで使いこなせると尚良。
+
+awkはコマンド部分でセミコロンをつなげれば、1行あたりに対して複数の命令が実行できる。
+
+```sh
+# tacもたまには役立つかも
+seq 5 | awk '{ for (i=1; i<$1; i++) { printf " " }; print "x" }' | tac
+# tacを使わずに、seqの逆順オプションを使ってみる
+seq 5 -1 1 | awk '{ for (i=$1; i>=1; i--) { printf " " }; print "x" }'
+# tacも逆順seqも使わずに
+seq 5 | awk '{ a++; for(i=5; i>a; i--) { printf " " }; print "x" }'
+
+# printfコマンドと初めて見る書式、幅を固定する
+printf "%*s\n" 5 x 4 x 3 x 2 x 1 x
+
+# trもシンプルながら便利ではある、-dオプションは除去
+seq 4 -1 0 | awk '{ print 10^$1"x" }' | tr -d 1 | tr 0 ' '
+```
+
