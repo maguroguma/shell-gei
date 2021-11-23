@@ -173,3 +173,24 @@ printf "%*s\n" 5 x 4 x 3 x 2 x 1 x
 seq 4 -1 0 | awk '{ print 10^$1"x" }' | tr -d 1 | tr 0 ' '
 ```
 
+## 問題7
+
+必ずしも一息ですべてを済ませようとしなくても良い。
+あと、awkの正規表現の条件は覚えておこう。
+
+```sh
+# 1回でやろうとするとうまく行かない
+cat qdata/7/kakeibo.txt | awk 'BEGIN { sum = 0 } { sum += $3*1.1 } END { print sum }'
+
+# 1列追加してみる
+cat qdata/7/kakeibo.txt | awk '{ tax=1.1; print $0, tax }'
+# 条件をつけて消費税を調整する、チルダでawkの正規表現の条件、3項演算子も使える
+cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ "^*") ? 1.08 : 1.1; print $0, tax }'
+# 正規表現はスラッシュで挟むほうが馴染むかも
+cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ /^*/) ? 1.08 : 1.1; print $0, tax }'
+# 1列にしてしまう
+cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ /^*/) ? 1.08 : 1.1; print $0, tax }' | awk '{ print int($3*$4) }'
+# 完成、zshではnumsumというコマンドはないっぽい？
+cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ /^*/) ? 1.08 : 1.1; print $0, tax }' | awk '{ print int($3*$4) }' | awk '{ a+=$1 } END { print a }'
+```
+
