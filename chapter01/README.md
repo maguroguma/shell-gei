@@ -194,3 +194,10 @@ cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ /^*/) ? 1.08 : 1.1
 cat qdata/7/kakeibo.txt | awk '{ tax = ($1<"20191001" || $2 ~ /^*/) ? 1.08 : 1.1; print $0, tax }' | awk '{ print int($3*$4) }' | awk '{ a+=$1 } END { print a }'
 ```
 
+## 問題8
+
+```sh
+# awkの-Fオプションで区切り文字を変更する
+# NFはNumber of Fieldsで列数を表す、これを利用して後ろからの列数を指定できる
+cat qdata/8/access.log | awk -F: '{ print $(NF-2) }' | awk '$1 < "12" { print "午前" } $1 >= "12" { print "午後" }' | sort | uniq -c
+```
